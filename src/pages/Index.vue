@@ -9,7 +9,6 @@
           class="col"
           color="primary"
           :outline="providerName !== 'ETH'"
-          icon="check"
           label="ETH"
           @click="connect('ETH')"
         />
@@ -17,7 +16,6 @@
           class="col"
           color="primary"
           :outline="providerName !== 'TRON'"
-          icon="check"
           label="Tron"
           @click="connect('TRON')"
         />
@@ -25,16 +23,15 @@
           class="col"
           color="primary"
           :outline="providerName !== 'EOS'"
-          icon="check"
           label="EOS"
           @click="connect('EOS')"
         />
       </q-card-section>
       <q-separator spaced inset />
       <q-card-section class="column q-py-sm">
-        <div class="column">
-          <div class="row"><div class="q-pr-md">{{ providerName }} Address: </div><div class="text-bold text-secondary">{{ nativeAddress }}</div></div>
-          <div class="row"><div class="q-pr-md">CKB Address: </div><div class="text-bold text-green-6">{{ ckbAddress }}</div></div>
+        <div class="column q-gutter-sm">
+          <div class="row"><div class="q-pr-md">{{ providerName }} Address: </div><div class="text-bold text-secondary" style="word-break: break-all;">{{ nativeAddress }}</div></div>
+          <div class="row"><div class="q-pr-md">CKB Address: </div><div class="text-bold text-green-6" style="word-break: break-all;">{{ ckbAddress }}</div></div>
           <div class="row"><div class="q-pr-md">CKB Balance: </div><div class="text-bold text-accent q-mr-xs">{{ balanceString }} </div>CKB</div>
         </div>
       </q-card-section>
@@ -42,9 +39,8 @@
     <q-card class="q-ma-lg">
       <q-card-section class="column q-py-sm">
         <div class="column">
-          <div class="row items-center"><div class="q-pr-md">Receive Address: </div><div class="text-bold text-secondary col"><q-input debounce="500" v-model="toAddressString" type="text" label="CKB / ETH / Tron / EOS Addresses" /></div></div>
-          <div class="row items-center"><div class="q-pr-md">Send Amount: </div><div class="text-bold text-green-6 col"><q-input debounce="500" v-model="amountValue" type="text" :label="`Minimal Amount: ${minAmount} CKB`" /></div></div>
-          <!-- <div class="row q-mt-sm"><div class="q-pr-md">Fee: </div><div class="text-bold text-accent q-mr-xs">{{ balanceString }} </div>CKB</div> -->
+          <div class="row items-center"><div class="q-pr-md">ToAddr: </div><div class="text-bold text-secondary col"><q-input debounce="500" v-model="toAddressString" type="text" label="CKB / ETH / Tron / EOS Addresses" /></div></div>
+          <div class="row items-center"><div class="q-pr-md">Amount: </div><div class="text-bold text-green-6 col"><q-input debounce="500" v-model="amountValue" type="text" :label="`Minimal Amount: ${minAmount} CKB`" /></div></div>
         </div>
       </q-card-section>
       <q-card-section class="column q-py-sm">
@@ -53,7 +49,7 @@
       <q-card-section class="column q-py-sm">
         <q-separator spaced />
         <div class="text-h6"> Sent TX List</div>
-        <a v-for="tx in txs" :key="tx" :href="`https://explorer.nervos.org/aggron/transaction/${tx}`"> {{tx}} </a>
+        <a v-for="tx in txs" :key="tx" :href="`https://explorer.nervos.org/aggron/transaction/${tx}`" style="word-break: break-all;"> {{tx}} </a>
       </q-card-section>
     </q-card>
   </q-page>
@@ -73,8 +69,7 @@ import supportedChains from "../services/chain";
 import Torus from "@toruslabs/torus-embed";
 import Web3 from "web3";
 
-// const NODE_URL = "https://testnet.ckb.dev";
-const NODE_URL = "https://aggron.ckb.dev";
+const NODE_URL = "https://testnet.ckb.dev";
 
 const EOS_NETWORK = {
   blockchain: 'eos',
