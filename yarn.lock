@@ -1129,10 +1129,10 @@
     "@ethersproject/rlp" "^5.0.3"
     "@ethersproject/signing-key" "^5.0.4"
 
-"@lay2/pw-core@0.4.0-alpha.3":
-  version "0.4.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/@lay2/pw-core/-/pw-core-0.4.0-alpha.3.tgz#cb83154c86e0e264d217745f5e310eca6ea65d81"
-  integrity sha512-LNUc1xV2LdQYxPyq0TNn1txHcFaz3qJ6f0j71XPF3LKXtgmkoMMZBehn5cgDhlvdCg23LxbTMzTt6PKx9XCXZw==
+"@lay2/pw-core@0.4.0-alpha.4":
+  version "0.4.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@lay2/pw-core/-/pw-core-0.4.0-alpha.4.tgz#d6932c53ba9b93c4602e87957f1b63c4adde0071"
+  integrity sha512-FZNLgJq9EN2KYoPe24PKk90e/ATLOto7QXXm7NZSP8S/WNHN0OhX4PjjCLsV2krD1Afl266u+wHPL7mH3KHJzg==
   dependencies:
     "@ckb-lumos/types" "^0.2.4"
     "@nervosnetwork/ckb-sdk-utils" "^0.32.0"
@@ -1148,7 +1148,6 @@
     ethereumjs-util "^7.0.2"
     jsbi "^3.1.2"
     keccak "^3.0.0"
-    web3 "^1.3.0"
 
 "@nervosnetwork/ckb-sdk-utils@^0.32.0":
   version "0.32.0"
@@ -12057,7 +12056,7 @@ web3@^0.20.7:
     xhr2-cookies "^1.1.0"
     xmlhttprequest "*"
 
-web3@^1.0.0-beta.34, web3@^1.3.0:
+web3@^1.0.0-beta.34:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/web3/-/web3-1.3.0.tgz#8fe4cd6e2a21c91904f343ba75717ee4c76bb349"
   integrity sha512-4q9dna0RecnrlgD/bD1C5S+81Untbd6Z/TBD7rb+D5Bvvc0Wxjr4OP70x+LlnwuRDjDtzBwJbNUblh2grlVArw==

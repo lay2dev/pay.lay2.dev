@@ -33,14 +33,16 @@
           <div class="row"><div class="q-pr-md">{{ providerName }} Address: </div><div class="text-bold text-secondary" style="word-break: break-all;">{{ nativeAddress }}</div></div>
           <div class="row"><div class="q-pr-md">CKB Address: </div><div class="text-bold text-green-6" style="word-break: break-all;">{{ ckbAddress }}</div></div>
           <div class="row"><div class="q-pr-md">CKB Balance: </div><div class="text-bold text-accent q-mr-xs">{{ balanceString }} </div>CKB</div>
+          <div class="row"><div class="q-pr-md">PW-BTC Balance: </div><div class="text-bold text-accent q-mr-xs">{{ pwbtcBalanceString }} </div>PW-BTC</div>
         </div>
       </q-card-section>
     </q-card>
     <q-card class="q-ma-lg">
       <q-card-section class="column q-py-sm">
         <div class="column">
+          <div class="row items-center"><div class="q-pr-md">Token: </div><div class="text-bold text-secondary col"><q-select debounce="500" v-model="tokenName" :options="options" /></div></div>
           <div class="row items-center"><div class="q-pr-md">ToAddr: </div><div class="text-bold text-secondary col"><q-input debounce="500" v-model="toAddressString" type="text" label="CKB / ETH / Tron / EOS Addresses" /></div></div>
-          <div class="row items-center"><div class="q-pr-md">Amount: </div><div class="text-bold text-green-6 col"><q-input debounce="500" v-model="amountValue" type="text" :label="`Minimal Amount: ${minAmount} CKB`" /></div></div>
+          <div class="row items-center"><div class="q-pr-md">Amount: </div><div class="text-bold text-green-6 col"><q-input debounce="500" v-model="amountValue" type="text" :label="`Minimal Amount: ${minAmount} ${tokenName}`" /></div></div>
         </div>
       </q-card-section>
       <q-card-section class="column q-py-sm">
@@ -60,7 +62,7 @@ import PWCore, {
   Amount,
   EthProvider,
   EosProvider,
-  TronProvider, PwCollector, AmountUnit, Address, AddressType, Web3ModalProvider
+  TronProvider, PwCollector, AmountUnit, Address, AddressType, Web3ModalProvider, SUDT
 } from "@lay2/pw-core";
 
 import Web3Modal from "web3modal";
@@ -79,6 +81,8 @@ const EOS_NETWORK = {
   protocol: 'https',
 }
 
+const PWBTC_ISSURER_LOCKHASH = '0xc369a6fc6f0f907e46de96f668d986b8e4b52ea832da213f864eda805d34c932';
+
 export default {
   name: "PageIndex",
   data() {
@@ -87,10 +91,13 @@ export default {
       provider: null,
       pw: null,
       web3Modal: null,
-   
+
       address: null,
       balance: Amount.ZERO,
       toAddressString: null,
+      pwbtcBalance: Amount.ZERO,
+      tokenName: 'CKB',
+      options: ['CKB', 'PW-BTC'],
       toAddress: null,
       minAmount: new Amount('61'),
       amountValue: null,
@@ -102,7 +109,8 @@ export default {
   computed: {
     nativeAddress() { return this.address ? this.address.addressString : '-' },
     ckbAddress() { return this.address ? this.address.toCKBAddress() : '-' },
-    balanceString() { return this.balance.toString(AmountUnit.ckb, {commify: true})}
+    balanceString() { return this.balance.toString(AmountUnit.ckb, {commify: true})},
+    pwbtcBalanceString() { return this.pwbtcBalance.toString(AmountUnit.ckb, {commify: true})}
   },
   async mounted() {
     this.web3Modal = new Web3Modal({
@@ -137,8 +145,23 @@ export default {
     },
     async send() {
       this.$q.loading.show();
-      const txHash = await this.pw.send(this.toAddress, this.amount);
-      this.txs.unshift(txHash);
+      try {
+        let txHash;
+        if(this.tokenName === 'CKB'){
+          txHash = await this.pw.send(this.toAddress, this.amount);
+        }else{
+          /**
+           when createAcp is true, pw-core will create a acp cell for receiver.
+           when createAcp is false, pw-core will not create acp cell for receiver. sudt will be transfered only if receiver already has acp cell.
+           */
+          const createAcp = true;
+          txHash = await this.pw.sendSUDT(new SUDT(PWBTC_ISSURER_LOCKHASH), this.toAddress, this.amount, createAcp);
+        }
+        this.txs.unshift(txHash);
+      } catch(err) {
+        console.error('send tx error', err);
+        alert(`send Error: ${JSON.stringify(err?.stack)}`);
+      }
       this.$q.loading.hide();
     },
   },
@@ -146,6 +169,7 @@ export default {
     async address(address) {
       console.log("new address: ", address.addressString);
       this.balance = await PWCore.defaultCollector.getBalance(address);
+      this.pwbtcBalance = await PWCore.defaultCollector.getSUDTBalance(new SUDT(PWBTC_ISSURER_LOCKHASH), address);
     },
     async toAddressString(addressString) {
       let addressType = AddressType.ckb;
@@ -162,7 +186,7 @@ export default {
       }
 
       this.toAddress = new Address(addressString, addressType, lockArgs);
-      this.minAmount = this.toAddress.minAmount || new Amount('61');
+      this.minAmount = this.toAddress.minPaymentAmount() || new Amount('61');
       console.log('to address: ', this.toAddress)
     },
     amountValue(amountValue) {
