@@ -30,6 +30,7 @@
       <q-separator spaced inset />
       <q-card-section class="column q-py-sm">
         <div class="column q-gutter-sm">
+          <div class="row"><div class="q-pr-md">Faucet: </div><a href="https://faucet.nervos.org/" target="_blank">https://faucet.nervos.org/</a></div>
           <div class="row"><div class="q-pr-md">{{ providerName }} Address: </div><div class="text-bold text-secondary" style="word-break: break-all;">{{ nativeAddress }}</div></div>
           <div class="row"><div class="q-pr-md">CKB Address: </div><div class="text-bold text-green-6" style="word-break: break-all;">{{ ckbAddress }}</div></div>
           <div class="row"><div class="q-pr-md">CKB Balance: </div><div class="text-bold text-accent q-mr-xs">{{ balanceString }} </div>CKB</div>
