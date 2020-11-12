@@ -130,7 +130,15 @@ export default {
       this.providerName = provider;
       switch(provider) {
         // case 'ETH': this.provider = new EthProvider(); break
-        case 'ETH': const p = await this.web3Modal.connect(); console.log('Web3 Provider: ', p); this.provider = new Web3ModalProvider(new Web3(p)); break
+        case 'ETH': 
+          try{
+            const p = await this.web3Modal.connect(); 
+            console.log('Web3 Provider: ', p); 
+            this.provider = new Web3ModalProvider(new Web3(p)); 
+          }catch(err){
+            console.log('connect err', err);
+          }
+          break
         case 'EOS': this.provider = new EosProvider(EOS_NETWORK); break
         case 'TRON': this.provider = new TronProvider(); break
         default: throw new Error('Unsupported Provider')
